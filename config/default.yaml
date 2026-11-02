@@ -1,0 +1,55 @@
+# Configuración por defecto de kick-password-watcher.
+# No edites este archivo para ajustes personales: crea config/local.yaml
+# (ignorado por git) con sólo los valores que quieras cambiar.
+# Ejemplo en config/local.example.yaml
+
+source:
+  type: stream                      # stream (recomendado, sin navegador) | screen
+  urls: []                          # canales vigilados a la vez; se definen en config/local.yaml
+                                    # (p. ej. https://kick.com/<canal>). Sin canales el bot no arranca.
+  quality: 1080p60,1080p,best       # se elige la primera disponible
+  keyframes_only: true              # ~1 fotograma cada 2 s; muy poco uso de CPU
+  sample_interval: 1.0
+  offline_retry: 30                 # segundos entre reintentos si el canal está offline
+  monitor: 1                        # sólo para type: screen
+
+detection:
+  anchor_text: CONTRASEÑA DE LA RAFFLE
+  anchor_min_similarity: 0.75
+  text_color:                       # verde menta de la palabra (HSV de OpenCV)
+    h_min: 65
+    h_max: 95
+    s_min: 70
+    s_max: 255
+    v_min: 100
+    v_max: 255
+  roi:                              # zona bajo el título, en múltiplos del título
+    expand_x: 0.25
+    gap: 0.1
+    height: 2.4
+  upscale: 3.0
+  min_text_pixels: 25
+  max_word_length: 40
+  allow_spaces: false
+  language: es
+
+trigger:
+  mode: discord                     # discord | always
+  app_name: Discord
+  keywords: []                      # vacío = cualquier notificación de Discord
+  active_seconds: 90
+  idle_interval: 2                  # revisión continua: cada keyframe (~2 s). 0 = sólo con notificación
+  poll_interval: 0.5
+
+confirm:
+  reads_required: 2
+  sparse_frame_gap: 3               # canales con keyframes cada >=3 s (p. ej. 4.2 s) aceptan 1 lectura
+  cooldown_seconds: 300
+
+output:
+  clipboard: true
+  discord_webhook_url: ""           # mejor en config/local.yaml o variable KICK_PW_DISCORD_WEBHOOK
+  extra_webhook_urls: []            # más canales que reciben el mismo mensaje
+  message_template: "Contraseña del sorteo: **{word}**"
+  beep: true
+  save_frames_dir: ""               # carpeta para guardar el fotograma detectado (vacío = no guardar)

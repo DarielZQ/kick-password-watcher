@@ -1,0 +1,29 @@
+# Archivos generados por Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Entornos virtuales
+.venv
+
+# Configuración local (canales, webhooks, ajustes personales)
+config/local.yaml
+config/configlocal.yaml
+.env
+
+# Datos generados en ejecución: registros, capturas, clips, fotogramas guardados
+data/
+logs/
+*.log
+capturas/
+clips/
+*.mp4
+*.mkv
+*.ts
+.pytest_cache/
+
+# Capturas reales de streams usadas como fixtures privadas (no se publican)
+tests/fixtures/privadas/

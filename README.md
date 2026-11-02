@@ -1,0 +1,92 @@
+# kick-password-watcher
+
+Vigila uno o varios canales de [Kick](https://kick.com) (directo o VOD), detecta
+con OCR la **contraseña de un sorteo** que el overlay del stream muestra en
+pantalla y la **copia al portapapeles** y la **envía a un canal de Discord** por
+webhook.
+
+- **No necesita el navegador abierto.** Lee el video de Kick en segundo plano
+  (streamlink + PyAV), así que la pestaña puede estar cerrada.
+- **Varios canales a la vez.** Si el mismo stream sale por más de un canal y la
+  contraseña aparece en varios, se envía una sola vez.
+- **Disparador opcional por notificaciones de Discord** (leídas desde Windows, sin
+  bots ni acceso a tu cuenta) y revisión continua por si la notificación no llega.
+- Lee tildes, ñ y números (OCR integrado de Windows en español).
+
+## Aviso de uso
+
+Este proyecto es una herramienta personal de lectura de video. Úsalo respetando
+los términos de servicio de Kick y de Discord, las reglas de cada canal y de
+cada sorteo, y la normativa aplicable. No automatiza la participación en
+sorteos ni escribe en el chat; si un sorteo prohíbe herramientas de este tipo,
+no la uses ahí.
+
+## Requisitos
+
+- Windows 10/11 con un idioma OCR español instalado (Configuración > Hora e idioma >
+  Idioma > Español > Opciones > Reconocimiento óptico de caracteres).
+- [uv](https://docs.astral.sh/uv/) (gestiona Python y dependencias).
+- Para el disparador: notificaciones de escritorio de Discord activadas.
+
+## Puesta en marcha
+
+```bash
+uv sync
+```
+
+Copia `config/local.example.yaml` como `config/local.yaml` (está en
+`.gitignore`) y rellena:
+
+```yaml
+source:
+  urls:
+    - https://kick.com/<canal>        # uno o varios canales
+output:
+  discord_webhook_url: "https://discord.com/api/webhooks/<id>/<token>"
+```
+
+El repositorio no trae canales por defecto: si `source.urls` está vacío, el bot
+termina con un error que indica qué falta. La URL del webhook también puede ir
+en la variable de entorno `KICK_PW_DISCORD_WEBHOOK`.
+
+Si el overlay de tu canal usa otro texto o color, ajusta `detection.anchor_text`
+(el título fijo que aparece encima de la contraseña) y `detection.text_color`
+(rango HSV de la palabra). El resto de opciones están comentadas en
+`config/default.yaml`.
+
+```bash
+uv run kick-password-watcher test-output prueba   # prueba portapapeles y webhook
+uv run kick-password-watcher run                  # arranca el bot
+```
+
+O doble clic en `scripts/iniciar_bot.bat`.
+
+## Comandos
+
+| Comando | Para qué |
+|---|---|
+| `kick-password-watcher run` | Arranca el bot (revisión continua + disparador de Discord) |
+| `kick-password-watcher run --always` | Busca en cada fotograma, sin depender de la notificación |
+| `kick-password-watcher detect img1.png ...` | Prueba la detección sobre capturas |
+| `kick-password-watcher scan https://kick.com/<canal>/videos/<id> --start 31:30 --end 33:00 --save data/samples` | Recorre un VOD y muestra qué detectaría |
+| `kick-password-watcher notifications` | Muestra las notificaciones nuevas y si disparan el bot (para ajustar `keywords`) |
+| `kick-password-watcher test-output [palabra]` | Prueba portapapeles y webhook |
+
+Añade `-v` para ver cada lectura.
+
+## Pruebas
+
+```bash
+uv run pytest -q
+```
+
+Las pruebas de detección usan imágenes **sintéticas** generadas por código
+(`tests/conftest.py`) con contraseñas inventadas. Si además tienes capturas
+reales propias en `tests/fixtures/privadas/` (carpeta ignorada por git), se
+ejecutan también; si faltan, esas pruebas se omiten con un aviso.
+
+## Documentación
+
+- [Estado del proyecto](PROJECT_STATUS.md) · [Traspaso](HANDOFF.md)
+- [Requisitos](docs/requirements.md) · [Investigación](docs/research.md)
+- [Arquitectura](docs/architecture.md) · [Decisiones](docs/decisions.md)

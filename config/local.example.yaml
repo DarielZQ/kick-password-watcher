@@ -1,0 +1,24 @@
+# Copia este archivo como config/local.yaml y ajusta lo que necesites.
+# config/local.yaml está en .gitignore: aquí van tus datos privados.
+
+source:
+  # Canales de Kick que se vigilan a la vez (al menos uno es obligatorio).
+  urls:
+    - https://kick.com/<canal>
+    # - https://kick.com/<otro_canal>
+
+output:
+  # Discord > tu canal > Editar canal > Integraciones > Webhooks > Nuevo webhook > Copiar URL
+  # También puede ir en la variable de entorno KICK_PW_DISCORD_WEBHOOK.
+  discord_webhook_url: "https://discord.com/api/webhooks/<id>/<token>"
+  extra_webhook_urls: []
+  message_template: "Contraseña del sorteo de CanalEjemplo: **{word}**"
+
+detection:
+  # Texto fijo que el overlay muestra encima de la contraseña.
+  anchor_text: CONTRASEÑA DE LA RAFFLE
+
+trigger:
+  # Sólo disparar con notificaciones que contengan alguna de estas palabras
+  # (nombre del servidor, del canal, del autor...). Vacío = cualquiera de Discord.
+  keywords: []

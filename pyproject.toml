@@ -1,0 +1,47 @@
+[project]
+name = "kick-password-watcher"
+version = "0.1.0"
+description = "Vigila directos y VODs de Kick, lee con OCR una contraseña de sorteo mostrada en pantalla y la avisa por webhook de Discord"
+authors = [
+    { name = "Dariel" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "av>=19.0.1",
+    "httpx>=0.28.1",
+    "mss>=10.2.0",
+    "numpy>=2.5.4",
+    "opencv-python>=5.0.0.93",
+    "pillow>=12.3.0",
+    "pydantic>=2.14.1",
+    "pyperclip>=1.11.0",
+    "pyyaml>=6.0.3",
+    "streamlink>=8.6.2",
+    "winrt-runtime>=3.2.1",
+    "winrt-windows-applicationmodel>=3.2.1",
+    "winrt-windows-foundation>=3.2.1",
+    "winrt-windows-foundation-collections>=3.2.1",
+    "winrt-windows-globalization>=3.2.1",
+    "winrt-windows-graphics-imaging>=3.2.1",
+    "winrt-windows-media-ocr>=3.2.1",
+    "winrt-windows-storage-streams>=3.2.1",
+    "winrt-windows-ui-notifications>=3.2.1",
+    "winrt-windows-ui-notifications-management>=3.2.1",
+]
+
+[project.scripts]
+kick-password-watcher = "kick_password_watcher.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+pythonpath = ["tests"]

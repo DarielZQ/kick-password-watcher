@@ -117,8 +117,26 @@ def render_synthetic_frame(word: str | None, position: tuple[int, int] = (650, 8
 
 # --- detector -------------------------------------------------------------
 
+def spanish_ocr_missing() -> str | None:
+    """Motivo para omitir las pruebas con OCR si Windows no tiene un idioma OCR español
+    (por ejemplo, en un runner de CI), o None si está disponible."""
+    try:
+        from winrt.windows.media.ocr import OcrEngine
+
+        tags = [lang.language_tag for lang in OcrEngine.available_recognizer_languages]
+    except Exception as exc:  # sin el motor OCR de Windows
+        return f"el OCR de Windows no está disponible en esta máquina ({exc})"
+    if not any(tag.lower().startswith("es") for tag in tags):
+        return ("no hay un idioma OCR de Windows en español instalado "
+                f"(instalados: {', '.join(tags) or 'ninguno'})")
+    return None
+
+
 @pytest.fixture(scope="session")
 def ocr() -> WindowsOcr:
+    reason = spanish_ocr_missing()
+    if reason:
+        pytest.skip(reason)
     return WindowsOcr("es")
 
 

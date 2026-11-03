@@ -1,5 +1,7 @@
 # kick-password-watcher
 
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+
 Vigila uno o varios canales de [Kick](https://kick.com) (directo o VOD), detecta
 con OCR la **contraseña de un sorteo** que el overlay del stream muestra en
 pantalla y la **copia al portapapeles** y la **envía a un canal de Discord** por
@@ -49,6 +51,7 @@ no la uses ahí.
 
 - **uv**: gestiona la versión de Python, el entorno y las dependencias (`uv.lock`).
 - **pytest**: pruebas automáticas con imágenes sintéticas (y capturas privadas opcionales).
+- **GitHub Actions**: integración continua que ejecuta las pruebas en Windows en cada push y pull request.
 
 ## Requisitos
 
@@ -144,6 +147,11 @@ Las pruebas de detección usan imágenes **sintéticas** generadas por código
 (`tests/conftest.py`) con contraseñas inventadas. Si además tienes capturas
 reales propias en `tests/fixtures/privadas/` (carpeta ignorada por git), se
 ejecutan también; si faltan, esas pruebas se omiten con un aviso.
+
+En GitHub Actions (`.github/workflows/ci.yml`) las pruebas corren en
+`windows-latest` con `uv sync --locked`. Las pruebas que usan el OCR se omiten
+con su motivo si Windows no tiene un idioma OCR español (habitual en los
+runners), igual que las de capturas privadas; `pytest -rs` muestra los motivos.
 
 ## Documentación
 

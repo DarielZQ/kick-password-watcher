@@ -21,6 +21,34 @@ cada sorteo, y la normativa aplicable. No automatiza la participación en
 sorteos ni escribe en el chat; si un sorteo prohíbe herramientas de este tipo,
 no la uses ahí.
 
+## Tecnologías
+
+**Lenguajes**
+
+- **Python 3.12**: todo el bot (captura, detección, OCR, confirmación y avisos).
+- **Batch (CMD)**: lanzador `scripts/iniciar_bot.bat` para arrancarlo con doble clic.
+
+**Librerías y plataforma**
+
+- **OpenCV** y **NumPy**: localizan el recuadro del overlay por color (HSV) y preparan el recorte para el OCR.
+- **OCR de Windows** (`Windows.Media.Ocr`, vía los paquetes **WinRT** para Python): lee el texto en español,
+  con tildes y ñ, sin instalar motores de OCR externos.
+- **Streamlink**: obtiene la URL HLS del directo o del VOD de Kick.
+- **PyAV** (bibliotecas de **FFmpeg** incluidas): decodifica el video en segundo plano, sin navegador.
+- **mss**: captura de pantalla como fuente alternativa al stream.
+- **Pydantic** y **PyYAML**: configuración en YAML (`config/default.yaml` + `config/local.yaml`) validada con
+  tipos.
+- **httpx**: envío de la contraseña a los **webhooks de Discord**.
+- **Notificaciones de Windows** (`UserNotificationListener`, vía WinRT): lee las notificaciones de escritorio
+  de Discord para disparar la búsqueda.
+- **pyperclip** y **winsound**: copia al portapapeles y aviso sonoro.
+- **Pillow**: genera en las pruebas las imágenes sintéticas del overlay.
+
+**Herramientas**
+
+- **uv**: gestiona la versión de Python, el entorno y las dependencias (`uv.lock`).
+- **pytest**: pruebas automáticas con imágenes sintéticas (y capturas privadas opcionales).
+
 ## Requisitos
 
 - Windows 10/11 con un idioma OCR español instalado (Configuración > Hora e idioma >

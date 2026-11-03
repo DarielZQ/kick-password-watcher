@@ -26,6 +26,7 @@ no la uses ahí.
 **Lenguajes**
 
 - **Python 3.12**: todo el bot (captura, detección, OCR, confirmación y avisos).
+- **PowerShell**: instalador `instalar.ps1` (con `instalar.bat` para lanzarlo con doble clic).
 - **Batch (CMD)**: lanzador `scripts/iniciar_bot.bat` para arrancarlo con doble clic.
 
 **Librerías y plataforma**
@@ -53,17 +54,46 @@ no la uses ahí.
 
 - Windows 10/11 con un idioma OCR español instalado (Configuración > Hora e idioma >
   Idioma > Español > Opciones > Reconocimiento óptico de caracteres).
-- [uv](https://docs.astral.sh/uv/) (gestiona Python y dependencias).
+- [uv](https://docs.astral.sh/uv/) (gestiona Python y dependencias). Si no lo
+  tienes, sirve Python 3.12 o superior con venv + pip.
 - Para el disparador: notificaciones de escritorio de Discord activadas.
 
+## Instalación con el instalador
+
+Doble clic en `instalar.bat`, o desde PowerShell en la carpeta del proyecto:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\instalar.ps1
+```
+
+El instalador:
+
+1. Comprueba que estás en Windows con PowerShell 5.1 o superior y busca `uv` o,
+   si no está, Python 3.12+ (`py -3.12`, `py -3` o `python`). Si falta algo,
+   explica cómo instalarlo (`winget` o la web oficial) y se detiene: **no instala
+   nada del sistema por su cuenta**. También avisa si Windows no tiene un idioma
+   OCR español.
+2. Instala las dependencias con `uv sync` o, sin uv, crea `.venv` e instala el
+   proyecto con `pip install -e . --group dev`.
+3. Crea `config/local.yaml` a partir de `config/local.example.yaml` **solo si no
+   existe**: nunca sobrescribe tu configuración.
+4. Pregunta si quieres un acceso directo "Kick Password Watcher" en el
+   Escritorio que abre `scripts/iniciar_bot.bat`.
+
+Se puede repetir las veces que haga falta (por ejemplo, para actualizar
+dependencias). Para no responder a la pregunta, añade `-AccesoDirecto` o
+`-SinAccesoDirecto` (también funcionan con `instalar.bat`).
+
 ## Puesta en marcha
+
+Si prefieres instalar a mano:
 
 ```bash
 uv sync
 ```
 
 Copia `config/local.example.yaml` como `config/local.yaml` (está en
-`.gitignore`) y rellena:
+`.gitignore`; el instalador ya lo crea) y rellena:
 
 ```yaml
 source:
@@ -87,7 +117,9 @@ uv run kick-password-watcher test-output prueba   # prueba portapapeles y webhoo
 uv run kick-password-watcher run                  # arranca el bot
 ```
 
-O doble clic en `scripts/iniciar_bot.bat`.
+O doble clic en `scripts/iniciar_bot.bat` (o en el acceso directo del Escritorio).
+El lanzador usa `uv run` y, si no hay uv, el entorno `.venv` que crea el
+instalador.
 
 ## Comandos
 
